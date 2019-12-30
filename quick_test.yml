@@ -3,8 +3,28 @@ execution:
   ramp-up: 1m
   hold-for: 2m
   scenario: quick-test
-
 scenarios:
-  quick-test:
+  common-workflow:
     requests:
-    - http://blazedemo.com
+      - urL: http://localhost:8080/v1/diff/{upload_id}/right
+        label: upload right part of comparison
+        method: POST
+        body: eyJyd3hyIjoiaHltdCJ9
+        assert-jsonpath:
+          - jsonpath: "$.status"
+            expected-value: "OK"
+          - jsonpath: "$.content"
+            expected-value: "Successfully stored"
+        # { "status": "OK", "content": "Successfully stored" }
+      - url: http://localhost:8080/v1/diff/{upload_id}/left
+        label: upload left side of comparison
+        method: POST
+        body: eyJyd3hyIjoiaHltdCJ9
+        # { "status": "OK", "content": "Successfully stored" }
+      - url: http://localhost:8080/v1/diff/{upload_id}
+        label: returns comparison result
+        method: GET
+        # { "status": "OK", "content": { "ID": "4", "result": "JSON binary data is the same" }
+  }
+settings:
+  artifacts-dir: /bzt-artifacts
