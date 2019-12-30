@@ -1,0 +1,12 @@
+FROM gradle:jdk11
+
+WORKDIR /
+RUN apt-get install git && git clone https://github.com/artsiom-tsaryonau/json-comparison.git
+
+WORKDIR /json-comparison
+RUN chmod +x gradlew && \
+    ./gradlew clean build -x pmdMain -x spotbugsMain -x checkstyleMain --no-daemon
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "json-comparison-application/build/libs/json-comparison-application-0.0.1-SNAPSHOT.jar"]

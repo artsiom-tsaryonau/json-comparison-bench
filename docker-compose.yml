@@ -1,0 +1,17 @@
+version: '3.7'
+services:
+  web-application:
+    build:
+      context: .
+      dockerfile: Dockerfile.application
+    ports:
+      - "8080:8080"
+  performance-testing:
+    image: json_comparison_perf
+    build:
+      context: .
+      dockerfile: Dockerfile.performance
+    volumes:
+        - ./:/home/tmp
+    depends_on:
+      - web-application
